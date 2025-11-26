@@ -5,16 +5,16 @@ from deepface import DeepFace
 from PIL import Image
 import base64
 
-# --- PENTING: set_page_config HARUS ditaruh paling atas (sebelum perintah st lainnya) ---
+
 st.set_page_config(page_title="Deteksi Emosi")
 
-# --- DATA MAHASISWA ---
+
 nama = "Dileando Gamaliel"
 nim = "672021245"
 univ = "Universitas Kristen Satya Wacana Salatiga"
 
-# --- HEADER (Logo & Judul) ---
-# Kita gunakan try-except agar tidak error jika file gambar logo tidak ditemukan
+
+# try-except digunakan untuk mengecek file gambar
 try:
     with open('logo_univ.png', 'rb') as f:
         logo_data = base64.b64encode(f.read()).decode()
@@ -36,7 +36,7 @@ except FileNotFoundError:
 st.title("Aplikasi Deteksi Emosi")
 st.write("Aplikasi ini menggunakan DeepFace untuk mendeteksi emosi wajah.")
 
-# --- FUNGSI DETEKSI (Reusable) ---
+# --- FUNGSI DETEKSI ---
 def deteksi_emosi(frame):
     try:
         # DeepFace analyze
@@ -71,8 +71,8 @@ if mode == "Ambil Foto (Webcam)":
     st.subheader("Mode Ambil Foto")
     st.info("Gunakan tombol di bawah untuk mengambil foto wajah Anda.")
 
-    # st.camera_input adalah cara yang BENAR untuk Streamlit Cloud
-    img_file_buffer = st.camera_input("Ambil Foto")
+    
+    img_file_buffer = st.camera_input("Ambil Foto") #digunakan untuk mengambil gambar versi cloud 
 
     if img_file_buffer is not None:
         # 1. Baca data gambar
