@@ -5,7 +5,7 @@ from deepface import DeepFace
 from PIL import Image
 import base64
 
-
+st.set_page_config(page_title="Deteksi Emosi")
 nama = "Dileando Gamaliel"
 nim = "672021245"
 univ = "Universitas Kristen Satya Wacana Salatiga"
@@ -20,7 +20,6 @@ st.markdown(f"""
     </div>
 </div>
 """, unsafe_allow_html=True)
-st.set_page_config(page_title="Deteksi Emosi")
 
 st.title("Aplikasi Deteksi Emosi")
 st.write("Aplikasi ini menggunakan DeepFace untuk mendeteksi emosi wajah.")
