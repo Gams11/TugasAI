@@ -60,50 +60,26 @@ def deteksi_emosi(frame):
 # --- MODE 1: WEBCAM REAL-TIME ---
 if mode == "Webcam Real-Time":
     st.subheader("Mode Kamera")
-    
-    # Inisialisasi state kamera
-    if 'run' not in st.session_state:
-        st.session_state['run'] = False #kondisi awal masuk web harus dalam keadaan kamera mati
+    st.write("Klik tombol 'Take Photo' di bawah untuk mendeteksi emosi.")
 
-    def start_camera():
-        st.session_state['run'] = True
+    # Menggunakan fitur native Streamlit untuk kamera di browser
+    img_file_buffer = st.camera_input("Ambil Foto Wajah")
 
-    def stop_camera():
-        st.session_state['run'] = False
-
-    col1, col2 = st.columns(2)
-    with col1:
-        start_btn = st.button("Nyalakan Kamera", on_click=start_camera)
-    with col2:
-        stop_btn = st.button("Matikan Kamera", on_click=stop_camera)
-
-    frame_window = st.image([])
-    
-    if st.session_state['run']:
-        cap = cv2.VideoCapture(0)
+    if img_file_buffer is not None:
+        # 1. Baca file gambar dari buffer
+        bytes_data = img_file_buffer.getvalue()
         
-        if not cap.isOpened(): #percabangan untuk menentukan kondisi nilai dari kamera
-            cap = cv2.VideoCapture(1)
-            if not cap.isOpened():
-                st.error("Kamera tidak ditemukan!")
-        
-        else:
-            while st.session_state['run']:
-                ret, frame = cap.read()
-                if not ret:
-                    st.error("Gagal membaca frame.")
-                    break
-                
-                # Panggil fungsi deteksi
-                frame_terproses = deteksi_emosi(frame)
+        # 2. Konversi ke format OpenCV
+        cv2_img = cv2.imdecode(np.frombuffer(bytes_data, np.uint8), cv2.IMREAD_COLOR)
 
-                # Konversi BGR ke RGB untuk Streamlit
-                frame_rgb = cv2.cvtColor(frame_terproses, cv2.COLOR_BGR2RGB)
-                frame_window.image(frame_rgb)
-            
-            cap.release()
-    else:
-        st.info("Tekan tombol untuk memulai kamera.")
+        st.write("Menganalisis...")
+        
+        # 3. Panggil fungsi deteksi yang sudah Anda buat
+        frame_terproses = deteksi_emosi(cv2_img)
+
+        # 4. Tampilkan hasil (Konversi BGR ke RGB)
+        frame_rgb = cv2.cvtColor(frame_terproses, cv2.COLOR_BGR2RGB)
+        st.image(frame_rgb, caption="Hasil Deteksi Real-Time", use_container_width=True)
 
 # --- MODE 2: UPLOAD GAMBAR ---
 elif mode == "Upload Gambar":
